@@ -9,7 +9,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /reactApp\/(.)*\.js$/,
+        test: /\.js$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
@@ -17,7 +17,9 @@ module.exports = {
             presets: ['react', 'es2015']
           }
         }
-      }
+      },
+      { test: /\.css$/,
+         use: ['style-loader','css-loader'] }
     ]
   },
   stats: {
