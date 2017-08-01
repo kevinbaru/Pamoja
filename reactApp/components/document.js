@@ -36,6 +36,21 @@ const styleMap = {
   'twenty':{
     fontSize:'20px'
   },
+  'thirty':{
+    fontSize:'30px'
+  },
+  'twelve':{
+    fontSize:'12px'
+  },
+  'fifteen':{
+    fontSize:'15px'
+  },
+  'ten':{
+    fontSize:'10px'
+  },
+  'five':{
+    fontSize:'5px'
+  },
   'blueish':{
     backgroundColor:'#848EF6'
   },
@@ -65,6 +80,9 @@ const blockRenderMap = Map({
     element: 'div'
   },
   'leftAlign': {
+    element: 'div'
+  },
+  'justify': {
     element: 'div'
   },
 
@@ -285,7 +303,7 @@ logout(){
   }
 
   handleShare(){
-    console.log('dhdhdhdhdh')
+
     this.handleClose();
     const docId= this.props.match.params.docId
     fetch('http://localhost:3000/sharedoc', {
@@ -315,18 +333,26 @@ logout(){
 
   }
 
-  toggleInlineFormat(e,style) {
+  toggleInlineFormat(e,style,block) {
     e.preventDefault(),
     this.refs.editor.focus()
+
+    if(block){
+      console.log('styllleee',style)
+      this.onChange(RichUtils.toggleBlockType(
+        this.state.editorState,style
+      ));
+    }else{
     this.onChange(RichUtils.toggleInlineStyle(
       this.state.editorState,style
     ));
   }
+  }
 
 
-  formatBS({icon, style}){
+  formatBS({icon, style,block}){
     return(
-      <button type="button" onMouseDown={(e)=>this.toggleInlineFormat(e,style)} className="btn btn-primary"
+      <button type="button" onMouseDown={(e)=>this.toggleInlineFormat(e,style,block)} className="btn btn-primary"
         style={{backgroundColor:this.state.editorState.getCurrentInlineStyle().has(style)? '#12489B':'#196AE5'}}
 
 
@@ -335,28 +361,6 @@ logout(){
     )
   }
 
-  _onTwentyClick() {
-    this.onChange(RichUtils.toggleInlineStyle(
-      this.state.editorState,'twenty'
-    ));
-  }
-
-  _onLeftClick() {
-    this.onChange(RichUtils.toggleBlockType(
-      this.state.editorState, 'leftAlign'
-    ));
-  }
-  _onCenterClick() {
-    this.onChange(RichUtils.toggleBlockType(
-      this.state.editorState, 'center'
-    ));
-  }
-
-  _onRightClick() {
-    this.onChange(RichUtils.toggleBlockType(
-      this.state.editorState, 'rightAlign'
-    ));
-  }
 
   myBlockStyleFn(contentBlock) {
     const type = contentBlock.getType();
@@ -407,7 +411,8 @@ logout(){
     let title=`${this.state.title}`
     return (
       <div style={styles.root}>
-        <div >
+        <div>
+
         <AppBar
           title={title}
           iconElementLeft={<RaisedButton
@@ -419,6 +424,7 @@ logout(){
           iconElementRight={<FlatButton  onClick={this.logout} label="Logout" />}
           style={{marginBottom:30}}
         />
+
         <Toolbar>
 
             <ToolbarGroup>
@@ -447,6 +453,7 @@ logout(){
            </ToolbarGroup>
 
         </Toolbar>
+
 
         <Dialog
           title="Share the Document"
@@ -484,7 +491,8 @@ logout(){
               </div>
 
 
-              <SplitButton bsStyle='primary' title='Font Color' >
+              <SplitButton style={{backgroundColor:'#196AE5'}} bsStyle='primary' title='Font Color' >
+
                 <MenuItem style={{backgroundColor:'black', height:25}} onMouseDown={(e)=>this.toggleInlineFormat(e,'black')}  eventKey="1">standard</MenuItem>
                 <MenuItem style={{backgroundColor:'green', height:25}} onMouseDown={(e)=>this.toggleInlineFormat(e,'green')} eventKey="2">green</MenuItem>
                 <MenuItem style={{backgroundColor:'red', height:25}} onMouseDown={(e)=>this.toggleInlineFormat(e,'red')}  eventKey="4">red</MenuItem>
@@ -495,16 +503,40 @@ logout(){
               </SplitButton>
 
               <div className="btn-group">
-                <button type="button" onClick={this._onLeftClick.bind(this)} className="btn btn-primary" ariaLabel="Align Left">
-                  <span className="glyphicon glyphicon-align-left" aria-hidden="true"></span></button>
-                  <button type="button" onClick={this._onCenterClick.bind(this)} className="btn btn-primary" ariaLabel="Center">
-                    <span className="glyphicon glyphicon-align-center" aria-hidden="true"></span></button>
-                    <button type="button" onClick={this._onRightClick.bind(this)} className="btn btn-primary" ariaLabel="Align Left">
-                      <span className="glyphicon glyphicon-align-left" aria-hidden="true"></span></button>
+                {this.formatBS({icon:"glyphicon glyphicon-align-left",style:'leftAlign',block:true})}
+                {this.formatBS({icon:"glyphicon glyphicon-align-center",style:'center',block:true})}
+                {this.formatBS({icon:"glyphicon glyphicon-align-justify",style:'justify',block:true})}
+                {this.formatBS({icon:"glyphicon glyphicon-align-right",style:'rightAlign',block:true})}
+
                 </div>
 
+                <div className="btn-group">
+                  {this.formatBS({icon:"glyphicon glyphicon-list",style:'unordered-list-item',block:true})}
+                  {this.formatBS({icon:"glyphicon glyphicon-list",style:'ordered-list-item',block:true})}
+                  {/* <RaisedButton
+                    backgroundColor='#196AE5'
+                    Color='white'
+                    onMouseDown={(e)=>this.toggleInlineFormat(e,'black',true)}
+                    icon={<FontIcon className="material-icons">format_list_numbered</FontIcon>}
+                    style={{margin:0}}
+                  />
+                  */}
+                  </div>
 
-              <button className="btn btn-primary" onClick={this._onTwentyClick.bind(this)}>Size-20</button>
+
+                  <SplitButton style={{backgroundColor:'#196AE5'}} bsStyle='primary' title='Font Size' >
+                    <MenuItem  onMouseDown={(e)=>this.toggleInlineFormat(e,'five')}  eventKey="1">five</MenuItem>
+                    <MenuItem  onMouseDown={(e)=>this.toggleInlineFormat(e,'ten')} eventKey="2">ten</MenuItem>
+                    <MenuItem  onMouseDown={(e)=>this.toggleInlineFormat(e,'twelve')}  eventKey="5"> twelve</MenuItem>
+                    <MenuItem onMouseDown={(e)=>this.toggleInlineFormat(e,'fifteen')}  eventKey="6">fifteen</MenuItem>
+                    <MenuItem  onMouseDown={(e)=>this.toggleInlineFormat(e,'twenty')}  eventKey="7">twenty</MenuItem>
+                    <MenuItem onMouseDown={(e)=>this.toggleInlineFormat(e,'thirty')}  eventKey="8">thirty</MenuItem>
+
+
+                  </SplitButton>
+
+
+
 
 
             </div>

@@ -2,7 +2,7 @@ var React = require('react');
 import { Card, CardTitle,CardMedia,CardActions } from 'material-ui/Card';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import FlatButton from 'material-ui/FlatButton';
-import documentModal from './documentModal'
+import DocumentModal from './documentModal'
 import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
 
@@ -18,7 +18,7 @@ class History extends React.Component {
       open:false,
   };
   this.handleRestore=this.handleRestore.bind(this);
-  this.handleOpen=this.handleOpen.bind(this)
+  // this.handleOpen=this.handleOpen.bind(this)
   this.handleClose=this.handleClose.bind(this)
 
   }
@@ -92,12 +92,20 @@ class History extends React.Component {
 
   }
 
-  handleOpen(){
-    this.setState({open: true});
-  };
+  showModal(content) {
+    // console.log(JSON.parse(content));
+      this.setState({
+        open: true,
+        content: content
+      });
+      alert('show modal');
+  }
 
   handleClose(){
-    this.setState({open: false});
+    this.setState({
+      open: false,
+      content: ''
+    });
   };
 
   render(){
@@ -117,6 +125,7 @@ class History extends React.Component {
     return(
       <div>
         <h2>{this.state.title}'s Saved Versions </h2>
+        {this.state.content && <DocumentModal open={this.state.open} handleClose={this.handleClose} content={this.state.content}/>}
       <div style = {{display:'flex', position: 'relative', flexFlow: 'row wrap', flexBasis: '80%'}} >
         {
           this.state.history.map((doc,index)=>{
@@ -125,6 +134,7 @@ class History extends React.Component {
                <Card  style={{height:210, width:150, margin:20}}>
                  <CardMedia
                    overlay={<CardTitle  subtitle={doc.date} />}
+                   onClick={() => this.showModal(doc.content)}
                    >
                      <img src="img/gdocs.jpg" alt="" height= "140" width="100"/>
                  </CardMedia>
