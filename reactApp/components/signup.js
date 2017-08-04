@@ -12,19 +12,19 @@ const SignUpForm = ({
   errors,
   user,
 }) => (
-  <div>
+  <div style={{backgroundColor:'#eee',height:'100vh'}}>
     <AppBar
       title="Pamoja"
       iconElementRight={<FlatButton  label="About" />}
-      style={{marginBottom:30}}
+      style={{marginBottom:70}}
     />
-  <Card className="container" style={{width:400,position:'absolute', align:'center', left:'25%', top:'25%'}}>
-    <form action="/" onSubmit={onSubmit}>
+  <Card style={{margin:'auto', maxWidth:380}}>
+    <form className="form-signin" onSubmit={onSubmit}>
       <h2 className="card-heading">Sign Up</h2>
 
       {errors.summary && <p className="error-message">{errors.summary}</p>}
 
-      <div className="field-line">
+      <div className="sform-control">
         <TextField
           floatingLabelText="Name"
           name="name"
@@ -34,7 +34,7 @@ const SignUpForm = ({
         />
       </div>
 
-      <div className="field-line">
+      <div className="sform-control">
         <TextField
           floatingLabelText="Email"
           name="email"
@@ -44,7 +44,7 @@ const SignUpForm = ({
         />
       </div>
 
-      <div className="field-line">
+      <div className="sform-control">
         <TextField
           floatingLabelText="Password"
           type="password"
@@ -55,7 +55,7 @@ const SignUpForm = ({
         />
       </div>
 
-      <div className="field-line">
+      <div className="sform-control">
         <TextField
           floatingLabelText=" Confirm Password"
           type="password"
@@ -67,7 +67,7 @@ const SignUpForm = ({
       </div>
 
       <div className="button-line">
-        <RaisedButton type="submit" label="Create New Account" primary />
+        <RaisedButton style={{width:'100%', height:50}} type="submit" label="Create New Account" primary />
       </div>
 
       <CardText>Already have an account? <Link to={'/login'}>Log in</Link></CardText>

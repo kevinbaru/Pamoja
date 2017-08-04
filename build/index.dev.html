@@ -77,10 +77,17 @@
       padding: 8px;
     }
 
-    .field-line, .button-line {
+   .button-line {
+      padding-top: 25px;
+      margin:auto;
+
+    }
+
+    .field-line {
       padding: 8px;
       margin-right: 20px;
     }
+
 
     .error-message {
       padding: 0 8px;
@@ -90,6 +97,47 @@
     .success-message {
       padding: 0 8px;
       color: green;
+    }
+
+    .btn-toolbar .btn-group{
+      float:none
+    }
+
+    .btn-group button{
+      background: #196AE5
+    }
+    .form-control {
+	  position: relative;
+	  font-size: 16px;
+	  height: auto;
+	  padding: 10px;
+
+		@include box-sizing(border-box);
+
+		&:focus {
+		  z-index: 5;
+		}
+	  }
+    .sform-control {
+    position: relative;
+    font-size: 16px;
+    height: auto;
+    padding: 10px;
+    @include box-sizing(border-box);
+    &:focus {
+      z-index: 5;
+    }
+    }
+    .form-signin {
+    max-width: 380px;
+    padding: 15px 35px 45px;
+    margin: 0 auto;
+    background-color: #fff;
+    border: 1px solid rgba(0,0,0,0.1);
+    }
+    .fadeBackground{
+      backgroundColor: #eee;
+      height:100vh;
     }
 
     </style>

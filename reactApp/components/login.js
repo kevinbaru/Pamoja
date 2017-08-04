@@ -13,43 +13,45 @@ const LoginForm = ({
   errors,
   user
 }) => (
-  <div>
+  <div style={{backgroundColor:'#eee',height:'100vh'}}>
     <AppBar
       title="Pamoja"
       iconElementRight={<FlatButton  label="About" />}
-      style={{marginBottom:30}}
+      style={{marginBottom:100}}
     />
 
-  <Card className="container" style={{width:400,position:'absolute', align:'center', left:'25%', top:'25%'}}>
+  <Card style={{margin:'auto', maxWidth:380}}>
 
-    <form onSubmit={onSubmit}>
+    <form className="form-signin" onSubmit={onSubmit}>
       <h2 className="card-heading">login</h2>
 
       {errors.summary && <p className="error-message">{errors.summary}</p>}
 
-      <div className="field-line">
+      <div className="form-control">
         <TextField
           floatingLabelText="Email"
           name="email"
           errorText={errors.email}
           onChange={onChange}
           value={user.email}
+          fullWidth={true}
         />
       </div>
 
-      <div className="field-line">
+      <div className="form-control">
         <TextField
           floatingLabelText="Password"
           type="password"
           name="password"
           onChange={onChange}
           errorText={errors.password}
+          fullWidth={true}
           value={user.password}
         />
       </div>
 
       <div className="button-line" >
-        <RaisedButton type="submit" label="Log in" primary />
+        <RaisedButton style={{width:'100%', height:50}} type="submit" label="Log in" primary />
       </div>
 
       <CardText>Don't have an account? <Link to={'/signup'}>Create one</Link>.</CardText>

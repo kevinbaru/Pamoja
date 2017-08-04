@@ -12,7 +12,9 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
 import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 import Drawer from 'material-ui/Drawer';
-
+import MenuItemini from 'material-ui/MenuItem';
+import History from './history';
+import Snackbar from 'material-ui/Snackbar';
 const { Map } = require('immutable')
 
 /* This can check if your electron app can communicate with your backend */
@@ -102,15 +104,18 @@ class MyEditor extends React.Component {
       saved:null,
       collaborator:"",
       open:false,
+      openDr:false,
     };
     this.saveDocument=this.saveDocument.bind(this);
     this.onChange = this.onChange.bind(this);
-    this.handleHistory= this.handleHistory.bind(this);
     this.handleShare= this.handleShare.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    this.logout = this.logout.bind(this)
+    this.logout = this.logout.bind(this);
+    this.handleToggleDrawer=this.handleToggleDrawer.bind(this);
+    this.handleSaved=this.handleSaved.bind(this);
+    this.handleRequestClose=this.handleRequestClose.bind(this);
     this.previousHighlight = null;
 
 this.socket = io('http://localhost:3000');
@@ -133,7 +138,7 @@ this.socket.on("receiveNewContent", stringifiedContent => {
 this.socket.on('receiveNewCursor', incomingSelectionObj => {
   //console.log('inc', incomingSelectionObj);
   this.setState({color:incomingSelectionObj.color});
-console.log("highlight color:",this.state.color)
+
   let editorState = this.state.editorState;
   const ogEditorState = editorState;
   const ogSelection = editorState.getSelection();
@@ -231,7 +236,7 @@ logout(){
 
   componentDidMount(){
     this.refs.editor.focus()
-    let docId= this.props.match.params.docId;
+    let docId= this.props.match.params.docId || this.props.docId;
     fetch('http://localhost:3000/documents/'+docId, {
       method: 'GET',
       headers: {
@@ -292,7 +297,7 @@ logout(){
       console.log(resp);
       if(resp.success){
         this.setState({saved:resp.doc.date})
-
+        this.handleSaved()
       }else{
         this.setState({error:resp.error.errmsg})
       }
@@ -332,13 +337,13 @@ logout(){
     .catch(err=> {throw err})
 
   }
-
+// Toggles history's drawer
   toggleInlineFormat(e,style,block) {
     e.preventDefault(),
     this.refs.editor.focus()
 
     if(block){
-      console.log('styllleee',style)
+
       this.onChange(RichUtils.toggleBlockType(
         this.state.editorState,style
       ));
@@ -348,7 +353,19 @@ logout(){
     ));
   }
   }
+// Toggles the saving Snackbar
 
+ handleSaved(){
+    this.setState({
+      openSn: true,
+    });
+  };
+
+  handleRequestClose(){
+    this.setState({
+      openSn: false,
+    });
+  };
 
   formatBS({icon, style,block}){
     return(
@@ -376,10 +393,7 @@ logout(){
     return null;
   }
 
-  handleHistory(){
-    this.saveDocument();
-    this.props.history.push('/history/'+this.props.match.params.docId)
-  }
+  handleToggleDrawer(){this.setState({openDr: !this.state.openDr})};
   handleOpen(){
     this.setState({open: true});
   };
@@ -390,6 +404,15 @@ logout(){
 
   handleChange(event) {
     this.setState({collaborator: event.target.value});
+  }
+
+  restorePage(content){
+    this.saveDocument();
+    let contenState=convertFromRaw(JSON.parse(content));
+    this.setState({
+      editorState: EditorState.createWithContent(contenState)
+    })
+    this.handleToggleDrawer();
   }
 
 
@@ -410,7 +433,7 @@ logout(){
 
     let title=`${this.state.title}`
     return (
-      <div style={styles.root}>
+      <div  style={{display:'flex', flexDirection:'column', overflow:"hidden", height:"100vh"}}>
         <div>
 
         <AppBar
@@ -430,7 +453,9 @@ logout(){
             <ToolbarGroup>
               <RaisedButton
                 backgroundColor='#5785F7'
-                onTouchTap={this.handleHistory}
+
+                  onTouchTap={this.handleToggleDrawer}
+
                 icon={<FontIcon className="material-icons">history</FontIcon>}
                 style={{margin:12}}
               />
@@ -480,8 +505,8 @@ logout(){
           </div>
         )}
 
-        <div className="btn-toolbar">
-          <div className="btn-group">
+        <div style={{float:'none', textAlign:'center'}} className="btn-toolbar">
+          <div style={{float:'none'}} className="btn-group">
 
               {this.formatBS({icon:"glyphicon glyphicon-bold",style:'BOLD'})}
               {this.formatBS({icon:"glyphicon glyphicon-italic",style:'ITALIC'})}
@@ -502,7 +527,7 @@ logout(){
 
               </SplitButton>
 
-              <div className="btn-group">
+              <div style={{float:'none'}} className="btn-group">
                 {this.formatBS({icon:"glyphicon glyphicon-align-left",style:'leftAlign',block:true})}
                 {this.formatBS({icon:"glyphicon glyphicon-align-center",style:'center',block:true})}
                 {this.formatBS({icon:"glyphicon glyphicon-align-justify",style:'justify',block:true})}
@@ -510,7 +535,7 @@ logout(){
 
                 </div>
 
-                <div className="btn-group">
+                <div style={{float:'none'}} className="btn-group">
                   {this.formatBS({icon:"glyphicon glyphicon-list",style:'unordered-list-item',block:true})}
                   {this.formatBS({icon:"glyphicon glyphicon-list",style:'ordered-list-item',block:true})}
                   {/* <RaisedButton
@@ -541,9 +566,9 @@ logout(){
 
             </div>
           </div>
-            <div  className='container'>
+            <div  style={{overflow:'scroll', height:'100vh',backgroundColor:'#eee'}}>
             <div  style={styles.editor} onClick={this.focus}>
-              <div className='container'>
+
 
               <Editor
                 editorState={this.state.editorState}
@@ -552,12 +577,32 @@ logout(){
                 ref="editor"
                 blockStyleFn={this.myBlockStyleFn}
                 blockRenderMap={extendedBlockRenderMap}
+                backgroundColor='#fff'
               />
-            </div>
 
 
+
             </div>
             </div>
+
+            <Drawer
+              docked={false}
+              width={200}
+              open={this.state.openDr}
+              onRequestChange={(openDr) => this.setState({openDr})}
+            >
+            <History restorePage ={(cont)=>this.restorePage(cont)} docId={this.props.match.params.docId} history={this.props.history}/>
+            </Drawer>
+
+            <Snackbar
+               open={this.state.openSn}
+               message="DOCUMENT HAS BEEN SAVED!"
+               autoHideDuration={4000}
+               onRequestClose={this.handleRequestClose}
+
+               bodyStyle={{alignItems:'center', display:'flex',backgroundColor:'#196AE5'}}
+               bodyStyle={{alignText:'center',backgroundColor:'#196AE5'}}
+             />
 
 
           </div>

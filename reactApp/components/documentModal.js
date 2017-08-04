@@ -94,31 +94,18 @@ export default class DocumentModal extends React.Component {
       error:null,
       open:false,
   };
-  // this.handleOpen=this.handleOpen.bind(this)
-  // this.handleClose=this.handleClose.bind(this)
-  //this.handleRestore=this.handleRestore.bind(this);
+
 
   }
 
-  //
-  //
-  // handleOpen(){
-  //   this.setState({open: true});
-  // };
-  //
-  // handleClose(){
-  //   this.setState({open: false});
-  // };
+
   componentWillMount(){
-    console.log(this.props.content);
+
     let contenState=convertFromRaw(JSON.parse(this.props.content));
     this.setState({
       editorState: EditorState.createWithContent(contenState)
     })
-    console.log('Modallllll')
-    //
-    // let contenState=convertFromRaw(JSON.parse(this.props.content));
-    // this.setState({content: contenState})
+
   }
 
   onChange(editorState) {
@@ -149,17 +136,19 @@ export default class DocumentModal extends React.Component {
         onTouchTap={this.props.handleClose}
       />,
       <FlatButton
-        label="Submit"
+        label="Restore"
         primary={true}
         keyboardFocused={true}
-        onTouchTap={this.props.handleClose}
+        onTouchTap={()=>{this.props.restore(this.props.content)
+          this.props.handleClose()
+        }}
       />,
     ];
-    console.log(this.props);
+
     return (
       <div>
         <Dialog
-          title="Scrollable Dialog"
+          title={this.state.title}
           actions={actions}
           modal={false}
           open={this.props.open}

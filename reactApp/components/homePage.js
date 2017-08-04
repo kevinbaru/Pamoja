@@ -1,11 +1,11 @@
 var React = require('react');
-import { Card, CardTitle,CardMedia,CardActions } from 'material-ui/Card';
+import { Card, CardTitle,CardMedia,CardActions,CardText } from 'material-ui/Card';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import FlatButton from 'material-ui/FlatButton';
 import AppBar from 'material-ui/AppBar';
 import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
-//import logout from './logout'
+import moment from 'moment';
 
 class HomePage extends React.Component {
   constructor(props) {
@@ -98,6 +98,7 @@ class HomePage extends React.Component {
   }
 
   componentDidMount(){
+
     this.getDocs()
 
   }
@@ -170,7 +171,7 @@ logout(){
         <div style = {{display:'flex', flexFlow:'row wrap', flexBasis: '80%'}}  >
 
           {
-            this.state.documents.map((doc)=>{
+            this.state.documents.reverse().map((doc)=>{
               return(
                 <MuiThemeProvider >
                  <Card  style={{height:190, width:150, margin:20}}>
@@ -179,11 +180,8 @@ logout(){
                      >
                        <img src="img/gdocs.jpg" alt="" height= "140" width="100"/>
                    </CardMedia>
-                   <CardActions style={{ margin:0,padding:0}}>
 
-                    <FlatButton   style={{ paddingLeft:30,paddingTop:10, color:'blue'}}label="Time" />
-
-                  </CardActions>
+                  <CardText style={{padding:8}}> {moment(doc.date).format('LLL')} </CardText>
                 </Card>
               </MuiThemeProvider>
 
