@@ -6,3 +6,4 @@
 ~Real time collaboration was implemented with sockets <br />
 ~Used material ui frameworks to provide a great user experience <br />
 ~Stand alone JSON API backend is built with MongoDB, passport and express <br />
+~ The react application was bundled using webpack <br />
