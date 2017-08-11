@@ -7,3 +7,9 @@
 ~Used material ui frameworks to provide a great user experience <br />
 ~Stand alone JSON API backend is built with MongoDB, passport and express <br />
 ~ The react application was bundled using webpack <br />
+##### Installation
+To run the app npm install nodemon --save, npm install to install the npm packages used <br />
+npm run dev to run  concurrently the server and the webpack <br />
+npm run devApp to open a new application window without running another server <br />
+
+
