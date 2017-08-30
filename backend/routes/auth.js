@@ -48,7 +48,6 @@ module.exports = function(passport) {
     // validation step
     const validationResult = validateSignupForm(req.body);
     if (!validationResult.success) {
-      console.log('naaaaah,.......',validationResult.errors)
       return  res.status(400).json({
         success: false,
         message: validationResult.message,
